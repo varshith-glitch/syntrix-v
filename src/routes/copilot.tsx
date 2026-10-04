@@ -47,6 +47,7 @@ function ChatWorkspace({ history, authError }: { history: UIMessage[]; authError
   const { messages, sendMessage, status, stop, error } = useChat({ messages: history, transport });
   const input = useRef<HTMLTextAreaElement>(null);
   const [text, setText] = useState('');
+  useEffect(() => { try { const draft = sessionStorage.getItem('syntrix-copilot-draft'); if (draft) { setText(draft); sessionStorage.removeItem('syntrix-copilot-draft'); } } catch {} }, []);
   const busy = status === 'submitted' || status === 'streaming';
   useEffect(() => { if (!busy) input.current?.focus(); }, [busy]);
   const submit = (message: PromptInputMessage) => { const value = (message.text || text).trim(); if (!value || busy) return; setText(''); sendMessage({ text: value }); input.current?.focus(); };

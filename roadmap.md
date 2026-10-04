@@ -5,3 +5,5 @@
 - [x] Connect live streaming Copilot to the AI service
 - [x] Verify desktop and mobile presentation
 - [ ] Verify signed-in Copilot response and saved history after an account is created and confirmed
+- [x] Build interactive 3D Molecular Lab with sequence analysis and Copilot handoff
+- [x] Replace remaining placeholder destinations with distinct usable research workspaces and project detail
