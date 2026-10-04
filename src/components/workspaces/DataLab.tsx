@@ -22,7 +22,7 @@ export function DataLab() {
     if (!parsed.length) throw new Error('The dataset has no rows.');
     if (parsed.length > 10000) throw new Error('Maximum 10,000 rows.');
     const cols = Object.keys(parsed[0] ?? {}); if (!cols.length || cols.length > 100) throw new Error('Use 1–100 columns.');
-    parsed = parsed.map(row => Object.fromEntries(cols.map(col => [col, typeof row[col] === 'number' || typeof row[col] === 'boolean' || row[col] == null ? row[col] : String(row[col]).slice(0, 1000)])));
+    parsed = parsed.map(row => Object.fromEntries(cols.map(col => [col, typeof row[col] === 'number' || typeof row[col] === 'boolean' || row[col] == null ? row[col] ?? null : String(row[col]).slice(0, 1000)])));
     const nums = cols.filter(col => parsed.some(row => typeof row[col] === 'number'));
     setRows(parsed); setName(file.name); setX(nums[0] ?? cols[0] ?? ''); setY(nums[1] ?? nums[0] ?? cols[0] ?? '');
   } catch (e) { setError(e instanceof Error ? e.message : 'Could not read the file.'); } };
