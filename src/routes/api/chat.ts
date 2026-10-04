@@ -31,15 +31,15 @@ export const Route = createFileRoute('/api/chat')({
     if (messages.some(m => !m || typeof m.id !== 'string' || (m.role !== 'user' && m.role !== 'assistant') || !Array.isArray(m.parts))) return Response.json({ message: 'Invalid conversation.' }, { status: 400 });
     const clean: UIMessage[] = messages.map(message => ({
       id: message.id, role: message.role,
-      parts: message.parts.flatMap(part => {
-        if (part.type === 'text' && typeof part.text === 'string') return [{ type: 'text' as const, text: part.text }];
-        if (message.role === 'assistant' && part.type === 'reasoning' && typeof part.text === 'string') return [{ type: 'reasoning' as const, text: part.text, ...(part.providerMetadata ? { providerMetadata: part.providerMetadata } : {}) }];
-        return [];
-      }),
+      parts: message.parts.reduce<UIMessage['parts']>((parts, part) => {
+        if (part.type === 'text' && typeof part.text === 'string') return [...parts, { type: 'text', text: part.text }];
+        if (message.role === 'assistant' && part.type === 'reasoning' && typeof part.text === 'string') return [...parts, { type: 'reasoning', text: part.text, ...(part.providerMetadata ? { providerMetadata: part.providerMetadata } : {}) }];
+        return parts;
+      }, []),
     }));
     const latest = clean.at(-1);
-    if (!latest?.parts.some(part => part.text.trim())) return Response.json({ message: 'Enter a question first.' }, { status: 400 });
-    const { error: saveError } = await db.from('copilot_conversations').upsert({ user_id: identity.user.id, messages: clean as Json }, { onConflict: 'user_id' });
+    if (!latest?.parts.some(part => part.type === 'text' && part.text.trim())) return Response.json({ message: 'Enter a question first.' }, { status: 400 });
+    const { error: saveError } = await db.from('copilot_conversations').upsert({ user_id: identity.user.id, messages: clean as unknown as Json }, { onConflict: 'user_id' });
     if (saveError) return Response.json({ message: 'Could not save your question.' }, { status: 500 });
     try {
       const modelMessages = await convertToModelMessages(clean);
