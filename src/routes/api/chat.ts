@@ -29,7 +29,14 @@ export const Route = createFileRoute('/api/chat')({
     const messages = body.messages;
     if (!Array.isArray(messages) || messages.length === 0 || messages.length > 40 || JSON.stringify(messages).length > 120000 || messages.at(-1)?.role !== 'user') return Response.json({ message: 'Please send a shorter message.' }, { status: 400 });
     if (messages.some(m => !m || typeof m.id !== 'string' || (m.role !== 'user' && m.role !== 'assistant') || !Array.isArray(m.parts))) return Response.json({ message: 'Invalid conversation.' }, { status: 400 });
-    const clean = messages.map(message => ({ id: message.id, role: message.role, parts: message.parts.filter(part => (part.type === 'text' && typeof part.text === 'string') || (message.role === 'assistant' && part.type === 'reasoning' && typeof part.text === 'string')).map(part => part.type === 'text' ? ({ type: 'text' as const, text: part.text }) : ({ type: 'reasoning' as const, text: part.text, ...(part.providerMetadata ? { providerMetadata: part.providerMetadata } : {}) })) }));
+    const clean: UIMessage[] = messages.map(message => ({
+      id: message.id, role: message.role,
+      parts: message.parts.flatMap(part => {
+        if (part.type === 'text' && typeof part.text === 'string') return [{ type: 'text' as const, text: part.text }];
+        if (message.role === 'assistant' && part.type === 'reasoning' && typeof part.text === 'string') return [{ type: 'reasoning' as const, text: part.text, ...(part.providerMetadata ? { providerMetadata: part.providerMetadata } : {}) }];
+        return [];
+      }),
+    }));
     const latest = clean.at(-1);
     if (!latest?.parts.some(part => part.text.trim())) return Response.json({ message: 'Enter a question first.' }, { status: 400 });
     const { error: saveError } = await db.from('copilot_conversations').upsert({ user_id: identity.user.id, messages: clean as Json }, { onConflict: 'user_id' });
@@ -50,7 +57,7 @@ export const Route = createFileRoute('/api/chat')({
         originalMessages: clean,
         sendReasoning: true,
         onFinish: async ({ messages: completed }) => {
-          const stored = completed.map(m => ({ id: m.id, role: m.role, parts: m.parts.filter(p => p.type === 'text' || p.type === 'reasoning').map(p => ({ type: p.type, text: p.text, ...(p.providerMetadata ? { providerMetadata: p.providerMetadata } : {}) })) }));
+          const stored = completed.map(m => ({ id: m.id, role: m.role, parts: m.parts.flatMap(p => { if (p.type === 'text') return [{ type: 'text', text: p.text }]; if (p.type === 'reasoning') return [{ type: 'reasoning', text: p.text, ...(p.providerMetadata ? { providerMetadata: p.providerMetadata } : {}) }]; return []; }) }));
           const { error } = await db.from('copilot_conversations').upsert({ user_id: identity.user.id, messages: stored as Json }, { onConflict: 'user_id' });
           if (error) console.error('Copilot save failed:', error.message);
         },

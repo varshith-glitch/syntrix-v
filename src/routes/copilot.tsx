@@ -30,7 +30,7 @@ function Copilot() {
       if (!active) return;
       setUserId(data.user?.id ?? null);
       if (data.user) {
-        try { const messages = await getCopilotHistory(); if (active) setHistory(messages); }
+        try { const messages = await getCopilotHistory(); if (active) setHistory(messages as unknown as UIMessage[]); }
         catch { if (active) setAuthError('Your saved conversation could not be loaded.'); }
       }
       if (active) setLoading(false);
