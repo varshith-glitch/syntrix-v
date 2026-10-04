@@ -10,33 +10,284 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BiosimRouteImport } from './routes/biosim'
+import { Route as CollaborationRouteImport } from './routes/collaboration'
+import { Route as CommandCenterRouteImport } from './routes/command-center'
+import { Route as CopilotRouteImport } from './routes/copilot'
+import { Route as DataLabRouteImport } from './routes/data-lab'
+import { Route as EvidenceRouteImport } from './routes/evidence'
+import { Route as HypothesisRouteImport } from './routes/hypothesis'
+import { Route as InnovationRouteImport } from './routes/innovation'
+import { Route as InsightsRouteImport } from './routes/insights'
+import { Route as KnowledgeRouteImport } from './routes/knowledge'
+import { Route as MolecularLabRouteImport } from './routes/molecular-lab'
+import { Route as NotificationsRouteImport } from './routes/notifications'
+import { Route as ProfileRouteImport } from './routes/profile'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as ReportsRouteImport } from './routes/reports'
+import { Route as ResearchRouteImport } from './routes/research'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as ValidationRouteImport } from './routes/validation'
+import { Route as ApiChatRouteImport } from './routes/api/chat'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BiosimRoute = BiosimRouteImport.update({
+  id: '/biosim',
+  path: '/biosim',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CollaborationRoute = CollaborationRouteImport.update({
+  id: '/collaboration',
+  path: '/collaboration',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CommandCenterRoute = CommandCenterRouteImport.update({
+  id: '/command-center',
+  path: '/command-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CopilotRoute = CopilotRouteImport.update({
+  id: '/copilot',
+  path: '/copilot',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DataLabRoute = DataLabRouteImport.update({
+  id: '/data-lab',
+  path: '/data-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EvidenceRoute = EvidenceRouteImport.update({
+  id: '/evidence',
+  path: '/evidence',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HypothesisRoute = HypothesisRouteImport.update({
+  id: '/hypothesis',
+  path: '/hypothesis',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InnovationRoute = InnovationRouteImport.update({
+  id: '/innovation',
+  path: '/innovation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InsightsRoute = InsightsRouteImport.update({
+  id: '/insights',
+  path: '/insights',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KnowledgeRoute = KnowledgeRouteImport.update({
+  id: '/knowledge',
+  path: '/knowledge',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MolecularLabRoute = MolecularLabRouteImport.update({
+  id: '/molecular-lab',
+  path: '/molecular-lab',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NotificationsRoute = NotificationsRouteImport.update({
+  id: '/notifications',
+  path: '/notifications',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileRoute = ProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReportsRoute = ReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResearchRoute = ResearchRouteImport.update({
+  id: '/research',
+  path: '/research',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ValidationRoute = ValidationRouteImport.update({
+  id: '/validation',
+  path: '/validation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiChatRoute = ApiChatRouteImport.update({
+  id: '/api/chat',
+  path: '/api/chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/biosim': typeof BiosimRoute
+  '/collaboration': typeof CollaborationRoute
+  '/command-center': typeof CommandCenterRoute
+  '/copilot': typeof CopilotRoute
+  '/data-lab': typeof DataLabRoute
+  '/evidence': typeof EvidenceRoute
+  '/hypothesis': typeof HypothesisRoute
+  '/innovation': typeof InnovationRoute
+  '/insights': typeof InsightsRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/molecular-lab': typeof MolecularLabRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/projects': typeof ProjectsRoute
+  '/reports': typeof ReportsRoute
+  '/research': typeof ResearchRoute
+  '/settings': typeof SettingsRoute
+  '/validation': typeof ValidationRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/biosim': typeof BiosimRoute
+  '/collaboration': typeof CollaborationRoute
+  '/command-center': typeof CommandCenterRoute
+  '/copilot': typeof CopilotRoute
+  '/data-lab': typeof DataLabRoute
+  '/evidence': typeof EvidenceRoute
+  '/hypothesis': typeof HypothesisRoute
+  '/innovation': typeof InnovationRoute
+  '/insights': typeof InsightsRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/molecular-lab': typeof MolecularLabRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/projects': typeof ProjectsRoute
+  '/reports': typeof ReportsRoute
+  '/research': typeof ResearchRoute
+  '/settings': typeof SettingsRoute
+  '/validation': typeof ValidationRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/biosim': typeof BiosimRoute
+  '/collaboration': typeof CollaborationRoute
+  '/command-center': typeof CommandCenterRoute
+  '/copilot': typeof CopilotRoute
+  '/data-lab': typeof DataLabRoute
+  '/evidence': typeof EvidenceRoute
+  '/hypothesis': typeof HypothesisRoute
+  '/innovation': typeof InnovationRoute
+  '/insights': typeof InsightsRoute
+  '/knowledge': typeof KnowledgeRoute
+  '/molecular-lab': typeof MolecularLabRoute
+  '/notifications': typeof NotificationsRoute
+  '/profile': typeof ProfileRoute
+  '/projects': typeof ProjectsRoute
+  '/reports': typeof ReportsRoute
+  '/research': typeof ResearchRoute
+  '/settings': typeof SettingsRoute
+  '/validation': typeof ValidationRoute
+  '/api/chat': typeof ApiChatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/biosim'
+    | '/collaboration'
+    | '/command-center'
+    | '/copilot'
+    | '/data-lab'
+    | '/evidence'
+    | '/hypothesis'
+    | '/innovation'
+    | '/insights'
+    | '/knowledge'
+    | '/molecular-lab'
+    | '/notifications'
+    | '/profile'
+    | '/projects'
+    | '/reports'
+    | '/research'
+    | '/settings'
+    | '/validation'
+    | '/api/chat'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/biosim'
+    | '/collaboration'
+    | '/command-center'
+    | '/copilot'
+    | '/data-lab'
+    | '/evidence'
+    | '/hypothesis'
+    | '/innovation'
+    | '/insights'
+    | '/knowledge'
+    | '/molecular-lab'
+    | '/notifications'
+    | '/profile'
+    | '/projects'
+    | '/reports'
+    | '/research'
+    | '/settings'
+    | '/validation'
+    | '/api/chat'
+  id:
+    | '__root__'
+    | '/'
+    | '/biosim'
+    | '/collaboration'
+    | '/command-center'
+    | '/copilot'
+    | '/data-lab'
+    | '/evidence'
+    | '/hypothesis'
+    | '/innovation'
+    | '/insights'
+    | '/knowledge'
+    | '/molecular-lab'
+    | '/notifications'
+    | '/profile'
+    | '/projects'
+    | '/reports'
+    | '/research'
+    | '/settings'
+    | '/validation'
+    | '/api/chat'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BiosimRoute: typeof BiosimRoute
+  CollaborationRoute: typeof CollaborationRoute
+  CommandCenterRoute: typeof CommandCenterRoute
+  CopilotRoute: typeof CopilotRoute
+  DataLabRoute: typeof DataLabRoute
+  EvidenceRoute: typeof EvidenceRoute
+  HypothesisRoute: typeof HypothesisRoute
+  InnovationRoute: typeof InnovationRoute
+  InsightsRoute: typeof InsightsRoute
+  KnowledgeRoute: typeof KnowledgeRoute
+  MolecularLabRoute: typeof MolecularLabRoute
+  NotificationsRoute: typeof NotificationsRoute
+  ProfileRoute: typeof ProfileRoute
+  ProjectsRoute: typeof ProjectsRoute
+  ReportsRoute: typeof ReportsRoute
+  ResearchRoute: typeof ResearchRoute
+  SettingsRoute: typeof SettingsRoute
+  ValidationRoute: typeof ValidationRoute
+  ApiChatRoute: typeof ApiChatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +299,163 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/biosim': {
+      id: '/biosim'
+      path: '/biosim'
+      fullPath: '/biosim'
+      preLoaderRoute: typeof BiosimRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/collaboration': {
+      id: '/collaboration'
+      path: '/collaboration'
+      fullPath: '/collaboration'
+      preLoaderRoute: typeof CollaborationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/command-center': {
+      id: '/command-center'
+      path: '/command-center'
+      fullPath: '/command-center'
+      preLoaderRoute: typeof CommandCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/copilot': {
+      id: '/copilot'
+      path: '/copilot'
+      fullPath: '/copilot'
+      preLoaderRoute: typeof CopilotRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/data-lab': {
+      id: '/data-lab'
+      path: '/data-lab'
+      fullPath: '/data-lab'
+      preLoaderRoute: typeof DataLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/evidence': {
+      id: '/evidence'
+      path: '/evidence'
+      fullPath: '/evidence'
+      preLoaderRoute: typeof EvidenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hypothesis': {
+      id: '/hypothesis'
+      path: '/hypothesis'
+      fullPath: '/hypothesis'
+      preLoaderRoute: typeof HypothesisRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/innovation': {
+      id: '/innovation'
+      path: '/innovation'
+      fullPath: '/innovation'
+      preLoaderRoute: typeof InnovationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/insights': {
+      id: '/insights'
+      path: '/insights'
+      fullPath: '/insights'
+      preLoaderRoute: typeof InsightsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/knowledge': {
+      id: '/knowledge'
+      path: '/knowledge'
+      fullPath: '/knowledge'
+      preLoaderRoute: typeof KnowledgeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/molecular-lab': {
+      id: '/molecular-lab'
+      path: '/molecular-lab'
+      fullPath: '/molecular-lab'
+      preLoaderRoute: typeof MolecularLabRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/notifications': {
+      id: '/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof NotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile': {
+      id: '/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof ProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reports': {
+      id: '/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof ReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/research': {
+      id: '/research'
+      path: '/research'
+      fullPath: '/research'
+      preLoaderRoute: typeof ResearchRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/validation': {
+      id: '/validation'
+      path: '/validation'
+      fullPath: '/validation'
+      preLoaderRoute: typeof ValidationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/chat': {
+      id: '/api/chat'
+      path: '/api/chat'
+      fullPath: '/api/chat'
+      preLoaderRoute: typeof ApiChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BiosimRoute: BiosimRoute,
+  CollaborationRoute: CollaborationRoute,
+  CommandCenterRoute: CommandCenterRoute,
+  CopilotRoute: CopilotRoute,
+  DataLabRoute: DataLabRoute,
+  EvidenceRoute: EvidenceRoute,
+  HypothesisRoute: HypothesisRoute,
+  InnovationRoute: InnovationRoute,
+  InsightsRoute: InsightsRoute,
+  KnowledgeRoute: KnowledgeRoute,
+  MolecularLabRoute: MolecularLabRoute,
+  NotificationsRoute: NotificationsRoute,
+  ProfileRoute: ProfileRoute,
+  ProjectsRoute: ProjectsRoute,
+  ReportsRoute: ReportsRoute,
+  ResearchRoute: ResearchRoute,
+  SettingsRoute: SettingsRoute,
+  ValidationRoute: ValidationRoute,
+  ApiChatRoute: ApiChatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
