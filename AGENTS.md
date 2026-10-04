@@ -8,3 +8,7 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Phase 1 uses TanStack routes for the application shell and a streaming server route for Copilot; this preserves the project's server boundary and supports live AI output.
+- Copilot saves one user-owned conversation in Lovable Cloud with row-level access; this matches the selected cross-device history model.
+- Planned future workspaces appear as distinct preview routes, not simulated working tools; this keeps Phase 1 navigation coherent without implying unbuilt science features exist.
