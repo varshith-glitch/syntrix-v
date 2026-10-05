@@ -1,6 +1,6 @@
-import { Canvas, useFrame } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls } from '@react-three/drei';
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 
 const complement: Record<string, string> = { A: 'T', T: 'A', C: 'G', G: 'C' };
@@ -50,10 +50,25 @@ function Helix({ sequence, selected, onSelect, rotating }: { sequence: string; s
   </group>;
 }
 
+function FrameCap({ fps }: { fps: number }) {
+  const { invalidate } = useThree();
+  useEffect(() => { const id = setInterval(() => invalidate(), 1000 / fps); return () => clearInterval(id); }, [fps, invalidate]);
+  return null;
+}
+
 export function DnaScene({ sequence, selected, onSelect, rotating }: { sequence: string; selected: number; onSelect: (index: number) => void; rotating: boolean }) {
-  return <div className="absolute inset-0" role="img" aria-label={`Interactive three-dimensional DNA double helix showing ${sequence.length} base pairs. Drag to rotate and scroll to zoom.`}>
-    <Canvas camera={{ position: [0, 0, 10.5], fov: 42 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
-      <ambientLight intensity={1.4} /><directionalLight position={[3, 5, 6]} intensity={2.2} /><pointLight position={[-4, -2, 2]} intensity={1.5} color="#a791df" />
+  const box = useRef<HTMLDivElement>(null);
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const el = box.current; if (!el) return;
+    let inView = true; const update = () => setVisible(inView && document.visibilityState === 'visible');
+    const io = new IntersectionObserver(([e]) => { inView = !!e?.isIntersecting; update(); }); io.observe(el);
+    document.addEventListener('visibilitychange', update);
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', update); };
+  }, []);
+  return <div ref={box} className="absolute inset-0" role="img" aria-label={`Interactive three-dimensional DNA double helix showing ${sequence.length} base pairs. Drag to rotate and scroll to zoom.`}>
+    <Canvas frameloop={visible ? 'demand' : 'never'} camera={{ position: [0, 0, 10.5], fov: 42 }} dpr={[1, 1.5]} gl={{ antialias: true, alpha: true }}>
+      {visible && <FrameCap fps={45} />}<ambientLight intensity={1.4} /><directionalLight position={[3, 5, 6]} intensity={2.2} /><pointLight position={[-4, -2, 2]} intensity={1.5} color="#a791df" />
       <Helix sequence={sequence} selected={selected} onSelect={onSelect} rotating={rotating} />
       <OrbitControls enablePan={false} minDistance={5.5} maxDistance={17} enableDamping dampingFactor={.08} />
     </Canvas>
