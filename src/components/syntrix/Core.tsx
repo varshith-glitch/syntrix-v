@@ -11,7 +11,7 @@ export function Core({ compact = false }: { compact?: boolean }) {
     const camera = new THREE.PerspectiveCamera(38, 1, 0.1, 100);
     camera.position.z = 8.5;
     const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true, powerPreference: 'low-power' });
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
     el.appendChild(renderer.domElement);
     const group = new THREE.Group(); scene.add(group);
     const shell = new THREE.Mesh(new THREE.SphereGeometry(2.22, 48, 32), new THREE.MeshBasicMaterial({ color: 0x72d8e2, transparent: true, opacity: 0.075, side: THREE.DoubleSide, wireframe: true })); group.add(shell);
@@ -39,10 +39,14 @@ export function Core({ compact = false }: { compact?: boolean }) {
     const ring = new THREE.Mesh(new THREE.TorusGeometry(2.6, .008, 8, 100), new THREE.MeshBasicMaterial({ color: 0x7ab6bc, transparent: true, opacity: .24 })); ring.rotation.x = 1.13; scene.add(ring);
     const resize = () => { const w = el.clientWidth, h = el.clientHeight; renderer.setSize(w,h); camera.aspect=w/h; camera.updateProjectionMatrix(); };
     const observer = new ResizeObserver(resize); observer.observe(el); resize();
-    let frame = 0; let raf = 0;
-    const animate = () => { frame += .004; group.rotation.y = frame; group.rotation.z = Math.sin(frame*.4)*.08; orbit.rotation.y = -frame*.45; ring.rotation.z = frame*.11; renderer.render(scene,camera); raf=requestAnimationFrame(animate); };
-    if (reducedMotion) renderer.render(scene, camera); else animate();
-    return () => { cancelAnimationFrame(raf); observer.disconnect(); renderer.dispose(); scene.traverse(obj => { if (obj instanceof THREE.Mesh || obj instanceof THREE.Line || obj instanceof THREE.Points) { obj.geometry.dispose(); const materials = Array.isArray(obj.material) ? obj.material : [obj.material]; materials.forEach(m=>m.dispose()); } }); el.removeChild(renderer.domElement); };
+    let frame = 0; let raf = 0; let last = 0; let inView = true;
+    const running = () => inView && document.visibilityState === 'visible';
+    const start = () => { if (!reducedMotion && !raf && running()) raf = requestAnimationFrame(animate); };
+    const io = new IntersectionObserver(([entry]) => { inView = !!entry?.isIntersecting; if (inView) start(); }, { threshold: 0.01 }); io.observe(el);
+    const onVis = () => start(); document.addEventListener('visibilitychange', onVis);
+    const animate = (now: number) => { raf = 0; if (!running()) return; raf = requestAnimationFrame(animate); if (now - last < 33) return; last = now; frame += .008; group.rotation.y = frame; group.rotation.z = Math.sin(frame*.4)*.08; orbit.rotation.y = -frame*.45; ring.rotation.z = frame*.11; renderer.render(scene,camera); };
+    renderer.render(scene, camera); start();
+    return () => { cancelAnimationFrame(raf); io.disconnect(); document.removeEventListener('visibilitychange', onVis); observer.disconnect(); renderer.dispose(); scene.traverse(obj => { if (obj instanceof THREE.Mesh || obj instanceof THREE.Line || obj instanceof THREE.Points) { obj.geometry.dispose(); const materials = Array.isArray(obj.material) ? obj.material : [obj.material]; materials.forEach(m=>m.dispose()); } }); el.removeChild(renderer.domElement); };
   }, []);
   return <div ref={mount} aria-label="Animated SYNTRIX Core: DNA strands, particles and orbiting nodes" role="img" className={compact ? 'h-20 w-20 shrink-0' : 'h-full w-full min-h-[185px] sm:min-h-[250px]'} />;
 }
