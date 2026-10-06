@@ -7,3 +7,9 @@
 - [ ] Verify signed-in Copilot response and saved history after an account is created and confirmed
 - [x] Build interactive 3D Molecular Lab with sequence analysis and Copilot handoff
 - [x] Replace remaining placeholder destinations with distinct usable research workspaces and project detail
+
+## Phase 3
+- [ ] Copilot: fix "shorter message" error, auto-scroll, creator identity, savage-on-overaction persona
+- [ ] Email verification required, callback success/error/expired-link recovery with resend
+- [ ] Richer Settings, Profile, Notifications
+- [ ] Smooth fade-and-slide page transitions
