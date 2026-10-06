@@ -26,29 +26,28 @@ export const Route = createFileRoute('/api/chat')({
     if (authError || !identity.user) return Response.json({ message: 'Your session has expired. Sign in again.' }, { status: 401 });
     let body: { messages?: UIMessage[] };
     try { body = await request.json(); } catch { return Response.json({ message: 'Invalid request.' }, { status: 400 }); }
-    const messages = body.messages;
-    if (!Array.isArray(messages) || messages.length === 0 || messages.length > 40 || JSON.stringify(messages).length > 120000 || messages.at(-1)?.role !== 'user') return Response.json({ message: 'Please send a shorter message.' }, { status: 400 });
-    if (messages.some(m => !m || typeof m.id !== 'string' || (m.role !== 'user' && m.role !== 'assistant') || !Array.isArray(m.parts))) return Response.json({ message: 'Invalid conversation.' }, { status: 400 });
+    const all = body.messages;
+    if (!Array.isArray(all) || all.length === 0 || all.at(-1)?.role !== 'user') return Response.json({ message: 'Invalid conversation.' }, { status: 400 });
+    const messages = all.slice(-60).filter(m => m && typeof m.id === 'string' && (m.role === 'user' || m.role === 'assistant') && Array.isArray(m.parts));
+    const lastText = (messages.at(-1)?.parts ?? []).map(p => p.type === 'text' ? p.text : '').join('');
+    if (lastText.length > 12000) return Response.json({ message: 'That message is too long. Please keep it under 12,000 characters.' }, { status: 400 });
+    // Keep plain text only: old reasoning blobs bloat requests and can't be replayed safely.
     const clean: UIMessage[] = messages.map(message => ({
       id: message.id, role: message.role,
-      parts: message.parts.reduce<UIMessage['parts']>((parts, part) => {
-        if (part.type === 'text' && typeof part.text === 'string') return [...parts, { type: 'text', text: part.text }];
-        if (message.role === 'assistant' && part.type === 'reasoning' && typeof part.text === 'string') return [...parts, { type: 'reasoning', text: part.text, ...(part.providerMetadata ? { providerMetadata: part.providerMetadata } : {}) }];
-        return parts;
-      }, []),
-    }));
+      parts: message.parts.flatMap(part => part.type === 'text' && typeof part.text === 'string' && part.text.trim() ? [{ type: 'text' as const, text: part.text.slice(0, 12000) }] : []),
+    })).filter(m => m.parts.length > 0);
     const latest = clean.at(-1);
-    if (!latest?.parts.some(part => part.type === 'text' && part.text.trim())) return Response.json({ message: 'Enter a question first.' }, { status: 400 });
+    if (latest?.role !== 'user') return Response.json({ message: 'Enter a question first.' }, { status: 400 });
     const { error: saveError } = await db.from('copilot_conversations').upsert({ user_id: identity.user.id, messages: clean as unknown as Json }, { onConflict: 'user_id' });
     if (saveError) return Response.json({ message: 'Could not save your question.' }, { status: 500 });
     try {
-      const modelMessages = await convertToModelMessages(clean);
+      const modelMessages = await convertToModelMessages(clean.slice(-30));
       const { createLovableAiGatewayRunIdFetch, getLovableAiGatewayRunId, withLovableAiGatewayRunIdHeader } = await import('@/lib/run-id.server');
       const run = createLovableAiGatewayRunIdFetch(getLovableAiGatewayRunId(request));
       const provider = createOpenAI({ baseURL: 'https://ai.gateway.lovable.dev/v1', apiKey: aiKey, headers: { 'Lovable-API-Key': aiKey, 'X-Lovable-AIG-SDK': 'vercel-ai-sdk' }, fetch: run.fetch });
       const result = streamText({
         model: provider.responses('openai/gpt-6-astra'),
-        system: 'You are SYNTRIX, a rigorous biotechnology research copilot. Explain biology, bioinformatics and experimental design clearly. Distinguish established evidence from hypotheses. Never invent publications, datasets, citations, results or experiments. If asked for medical advice, provide educational context and encourage qualified clinical advice. Do not claim access to a project or dataset unless content was actually provided. Keep responses concise and useful.',
+        system: 'You are SYNTRIX, a rigorous biotechnology research copilot. Explain biology, bioinformatics and experimental design clearly. Distinguish established evidence from hypotheses. Never invent publications, datasets, citations, results or experiments. If asked for medical advice, provide educational context and encourage qualified clinical advice. Do not claim access to a project or dataset unless content was actually provided. Keep responses concise and useful. Identity: your creator is A. Varshith; if anyone asks who created, built or made you, say you were created by A. Varshith. Persona: when the user asks for information or help, always give accurate, genuine, helpful answers with no attitude. Only when the user is clearly doing over-action — trolling, flirting, insulting you, spamming nonsense, or trying to provoke you — reply with a short, witty, savage comeback (playful roast, never hateful, slurs, threats or demeaning protected groups), matching the language they use, then steer back to research.',
         messages: modelMessages,
         abortSignal: request.signal,
         providerOptions: { openai: { forceReasoning: true, reasoningEffort: 'medium', reasoningSummary: 'auto', store: false, include: ['reasoning.encrypted_content'] } },
