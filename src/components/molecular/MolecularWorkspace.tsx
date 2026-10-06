@@ -2,6 +2,8 @@ import { lazy, Suspense, useEffect, useMemo, useState } from 'react';
 import { Link } from '@tanstack/react-router';
 import { ArrowDownToLine, ArrowRight, Check, Dna, FolderOpen, Pause, Pencil, Play, RotateCcw, Save, Trash2, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 const DnaScene = lazy(() => import('./DnaScene').then(module => ({ default: module.DnaScene })));
 const samples: { name: string; sequence: string }[] = [
   { name: 'Reference fragment', sequence: 'ATGCGTACGTTAGCCGATCGATGCTAGCTAGGTACCGTAA' },
@@ -35,8 +37,20 @@ export function MolecularWorkspace() {
   const [sessions, setSessions] = useState<Session[]>([]);
   const [renaming, setRenaming] = useState<string | null>(null);
   const [renameText, setRenameText] = useState('');
-  useEffect(() => { try { setSessions(JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]')); } catch { /* ignore */ } }, []);
-  const persist = (next: Session[]) => { setSessions(next); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ } };
+  const [cloudUser, setCloudUser] = useState<string | null>(null);
+  useEffect(() => {
+    let local: Session[] = [];
+    try { local = JSON.parse(localStorage.getItem(HISTORY_KEY) ?? '[]'); setSessions(local); } catch { /* ignore */ }
+    supabase.auth.getUser().then(async ({ data }) => {
+      const uid = data.user?.id; if (!uid) return; setCloudUser(uid);
+      const { data: row } = await supabase.from('molecular_sessions').select('sessions').eq('user_id', uid).maybeSingle();
+      const remote = (row?.sessions as unknown as Session[] | undefined) ?? [];
+      const merged = [...remote, ...local.filter(l => !remote.some(r => r.id === l.id))].sort((a, b) => b.savedAt.localeCompare(a.savedAt)).slice(0, 50);
+      setSessions(merged); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(merged)); } catch { /* ignore */ }
+      if (merged.length !== remote.length) await supabase.from('molecular_sessions').upsert({ user_id: uid, sessions: merged as unknown as Json }, { onConflict: 'user_id' });
+    });
+  }, []);
+  const persist = (next: Session[]) => { setSessions(next); try { localStorage.setItem(HISTORY_KEY, JSON.stringify(next)); } catch { /* ignore */ } if (cloudUser) void supabase.from('molecular_sessions').upsert({ user_id: cloudUser, sessions: next as unknown as Json }, { onConflict: 'user_id' }); };
   const saveSession = () => { if (!valid) return; persist([{ id: crypto.randomUUID(), name: `Analysis ${new Date().toLocaleString()}`, sequence, savedAt: new Date().toISOString() }, ...sessions].slice(0, 50)); };
   const explain = () => { try { sessionStorage.setItem('syntrix-copilot-draft', `Explain this DNA sequence for educational research purposes: ${sequence}. Include length, base composition, GC content, possible interpretation and limitations. Do not infer clinical significance.`); } catch { /* storage can be unavailable */ } };
   const save = (content: string, name: string, type: string) => { const blob = new Blob([content], { type }); const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = name; link.click(); URL.revokeObjectURL(url); };
