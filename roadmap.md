@@ -9,8 +9,9 @@
 - [x] Replace remaining placeholder destinations with distinct usable research workspaces and project detail
 
 ## Phase 3
-- [ ] Copilot: fix "shorter message" error, auto-scroll, creator identity, savage-on-overaction persona
-- [ ] Email verification required, callback success/error/expired-link recovery with resend
-- [ ] Richer Settings, Profile, Notifications
-- [ ] Smooth fade-and-slide page transitions
-- [ ] Molecular Lab sessions saved to account (cross-device)
+- [x] Copilot: fix "shorter message" error, auto-scroll, creator identity, savage-on-overaction persona
+- [x] Email verification required, callback success/error/expired-link recovery with resend
+- [x] Richer Settings, Profile, Notifications
+- [x] Smooth fade-and-slide page transitions
+- [x] Molecular Lab sessions saved to account (cross-device)
+- [ ] Custom email domain (optional): auth emails use the default sender until the user sets one up
