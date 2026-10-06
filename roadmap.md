@@ -13,3 +13,4 @@
 - [ ] Email verification required, callback success/error/expired-link recovery with resend
 - [ ] Richer Settings, Profile, Notifications
 - [ ] Smooth fade-and-slide page transitions
+- [ ] Molecular Lab sessions saved to account (cross-device)
