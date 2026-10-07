@@ -1,5 +1,5 @@
 import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Activity, Atom, Bell, BookOpen, BrainCircuit, ChartNoAxesCombined, ChevronLeft, ChevronRight, CircleDot, Command as CommandIcon, Compass, Dna, FileText, FlaskConical, FolderKanban, Hexagon, Lightbulb, Menu, Microscope, Network, Search, Settings, ShieldCheck, Users, UserRound, X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CommandDialog, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, CommandShortcut } from '@/components/ui/command';
@@ -37,6 +37,15 @@ export function Shell({ children }: { children: React.ReactNode }) {
   const [palette, setPalette] = useState(false);
   const [time, setTime] = useState('');
   const [signedIn, setSignedIn] = useState(false);
+  const page = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches || document.documentElement.classList.contains('reduce-motion')) return;
+    const animation = page.current?.animate(
+      [{ opacity: 0.7, transform: 'translateY(6px)' }, { opacity: 1, transform: 'translateY(0)' }],
+      { duration: 180, easing: 'ease-out' },
+    );
+    return () => animation?.cancel();
+  }, [pathname]);
   useEffect(() => {
     const update = () => setTime(new Date().toISOString().slice(11, 16)); update(); const interval = setInterval(update, 30000);
     supabase.auth.getUser().then(({ data }) => setSignedIn(!!data.user));
@@ -67,7 +76,7 @@ export function Shell({ children }: { children: React.ReactNode }) {
         <div className="flex min-w-0 items-center gap-3"><Button variant="ghost" size="icon" className="lg:hidden" aria-label="Open navigation" onClick={() => setMobileOpen(true)}><Menu /></Button><nav aria-label="Breadcrumb" className="min-w-0"><ol className="flex min-w-0 items-center gap-2 text-[13px]"><li className="hidden sm:block"><Link to="/command-center" className="font-mono text-[10px] tracking-[.16em] text-muted-foreground hover:text-primary">SYNTRIX</Link></li>{active && <li className="hidden items-center gap-2 font-mono text-[10px] tracking-[.16em] text-muted-foreground md:flex"><ChevronRight className="size-3" />{active.group}</li>}<li className="flex min-w-0 items-center gap-2"><ChevronRight className="hidden size-3 text-muted-foreground sm:block" /><span aria-current="page" className="truncate font-medium text-foreground">{active?.label ?? (pathname.startsWith('/auth') ? 'Sign in' : 'Command Center')}</span></li></ol></nav></div>
         <div className="flex items-center gap-2 sm:gap-5"><span className="hidden items-center gap-2 font-mono text-[10px] text-muted-foreground xl:flex"><span className="size-1.5 rounded-full bg-emerald shadow-[0_0_8px_var(--emerald)]" /> SYSTEM ONLINE <span className="mx-2 text-border">/</span> {time} UTC</span><Button variant="outline" size="sm" onClick={() => setPalette(true)} className="h-8 gap-2 border-border bg-surface text-muted-foreground hover:text-foreground" aria-label="Open command palette"><Search className="size-3.5" /><span className="hidden sm:inline">Search anything</span><kbd className="ml-2 hidden border border-border px-1.5 py-0.5 font-mono text-[10px] lg:inline">⌘ K</kbd></Button><span title={signedIn ? 'Cloud session active' : 'Sign in for saved research'} className="flex size-8 items-center justify-center rounded-full border border-border bg-surface-high font-mono text-[10px] text-primary">{signedIn ? 'ON' : 'SX'}</span></div>
       </header>
-      <main className="min-w-0 flex-1"><div key={pathname} className="page-transition">{children}</div></main>
+      <main className="min-w-0 flex-1"><div ref={page} className="page-transition">{children}</div></main>
     </div>
     <CommandDialog open={palette} onOpenChange={setPalette}><CommandInput placeholder="Search pages and commands..." /><CommandList><CommandEmpty>No matching destination.</CommandEmpty>{['WORKSPACE','LABORATORY','DISCOVERY','WORK MANAGEMENT','ACCOUNT'].map(group => <CommandGroup key={group} heading={group}>{nav.filter(item => item.group === group).map(item => <CommandItem key={item.path} onSelect={() => go(item.path)}><item.icon className="mr-2 size-4" />{item.label}{item.path === '/copilot' && <CommandShortcut>Ask AI</CommandShortcut>}</CommandItem>)}</CommandGroup>)}</CommandList></CommandDialog>
   </div>;

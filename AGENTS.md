@@ -13,3 +13,5 @@
 - Copilot saves one user-owned conversation in Lovable Cloud with row-level access; this matches the selected cross-device history model.
 - Planned future workspaces appear as distinct preview routes, not simulated working tools; this keeps Phase 1 navigation coherent without implying unbuilt science features exist.
 - Email verification and OAuth return to the public /auth/callback route, which completes the session client-side; protected destinations are reached only after the session exists.
+- Shell transitions animate a stable content wrapper without pathname keys or filters to avoid extra page remounts and expensive compositing.
+- Signed-out Copilot uses natural document height so authentication controls remain reachable; only signed-in chat has viewport-constrained scrolling.

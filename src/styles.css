@@ -128,6 +128,5 @@
 @keyframes slowSpin { to { transform: rotate(360deg); } }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; scroll-behavior: auto !important; } }
 html.reduce-motion *, html.reduce-motion *::before, html.reduce-motion *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
-@keyframes pageIn { 0% { opacity: 0; transform: translateY(18px); filter: blur(4px) saturate(.6); } 60% { filter: blur(0) saturate(1); } 100% { opacity: 1; transform: none; filter: none; } }
-.page-transition { animation: pageIn .55s cubic-bezier(.16,1,.3,1) both; }
+.page-transition { min-width: 0; }
 html.compact main .space-y-4 > * + * { margin-top: .5rem; } html.reduce-motion .page-transition { animation: none; }

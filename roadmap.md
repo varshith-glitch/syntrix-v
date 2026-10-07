@@ -9,6 +9,7 @@
 - [x] Replace remaining placeholder destinations with distinct usable research workspaces and project detail
 
 ## Phase 3
+- [ ] Verify fully scrollable sign-in and lightweight page transitions
 - [x] Copilot: fix "shorter message" error, auto-scroll, creator identity, savage-on-overaction persona
 - [x] Email verification required, callback success/error/expired-link recovery with resend
 - [x] Richer Settings, Profile, Notifications
