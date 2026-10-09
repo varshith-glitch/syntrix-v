@@ -8,7 +8,7 @@ describe('parseCsv', () => {
     expect(d.rows.length).toBe(8);
     expect(d.columns).toEqual(['id', 'name', 'dose', 'score']);
     expect(d.numeric).toEqual(['id', 'dose', 'score']);
-    expect(d.rows[1]!.name).toBe('Gene, 1\nline');
+    expect(d.rows[1]!['name']).toBe('Gene, 1\nline');
   });
   it('handles missing values without zeros and single rows', () => {
     const d = parseCsv('a,b\n1,\n,3\n');
