@@ -15,3 +15,4 @@
 - Email verification and OAuth return to the public /auth/callback route, which completes the session client-side; protected destinations are reached only after the session exists.
 - Shell transitions animate a stable content wrapper without pathname keys or filters to avoid extra page remounts and expensive compositing.
 - Signed-out Copilot uses natural document height so authentication controls remain reachable; only signed-in chat has viewport-constrained scrolling.
+- Research Studio, Hypothesis Engine, Knowledge Graph, Evidence and Validation share one local record store (src/lib/research-store.ts) and derive hypothesis status from logged results; literature comes only from Europe PMC via a server function so no source is ever invented.
