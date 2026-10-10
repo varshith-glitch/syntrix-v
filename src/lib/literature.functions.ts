@@ -12,7 +12,7 @@ export const searchLiterature = createServerFn({ method: 'POST' })
     return { query };
   })
   .handler(async ({ data }): Promise<{ total: number; papers: Paper[] }> => {
-    const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(data.query)}&format=json&resultType=core&pageSize=10&sort=RELEVANCE`;
+    const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(data.query)}&format=json&resultType=core&pageSize=10`;
     const res = await fetch(url, { headers: { Accept: 'application/json' } });
     if (!res.ok) throw new Error(`Literature search is unavailable right now (${res.status}).`);
     const json = await res.json() as { hitCount?: number; resultList?: { result?: Record<string, any>[] } };
