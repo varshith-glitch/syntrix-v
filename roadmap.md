@@ -8,6 +8,8 @@
 - [x] Build interactive 3D Molecular Lab with sequence analysis and Copilot handoff
 - [x] Replace remaining placeholder destinations with distinct usable research workspaces and project detail
 
+- [x] Upgrade Research, Hypothesis, Knowledge, Evidence, Validation into a linked evidence workflow
+
 ## Phase 3
 - [x] Verify fully scrollable sign-in and lightweight page transitions
 - [x] Copilot: fix "shorter message" error, auto-scroll, creator identity, savage-on-overaction persona
