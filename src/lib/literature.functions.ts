@@ -6,7 +6,7 @@ const clean = (s: unknown) => typeof s === 'string' ? s.replace(/<[^>]+>/g, '').
 
 // Real literature retrieval from Europe PMC (public, no key). Returns only fields the source provides.
 export const searchLiterature = createServerFn({ method: 'POST' })
-  .inputValidator((input: { query: string }) => {
+  .validator((input: { query: string }) => {
     const query = String(input?.query ?? '').trim();
     if (query.length < 3 || query.length > 300) throw new Error('Enter a question between 3 and 300 characters.');
     return { query };
